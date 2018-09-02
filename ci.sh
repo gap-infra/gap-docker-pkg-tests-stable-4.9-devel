@@ -3,11 +3,13 @@
 set -e
 
 SRCDIR=${SRCDIR:-$PWD}
+PKG_NAME="$(cut -d'/' -f2 <<< ${REPO_NAME})"
 
-echo SRCDIR   : $SRCDIR
-echo PKG_NAME : $PKG_NAME
+echo SRCDIR    : $SRCDIR
+echo REPO_NAME : $REPO_NAME
+echo PKG_NAME  : $PKG_NAME
 
-git clone https://github.com/gap-packages/${PKG_NAME}
+git clone https://github.com/${REPO_NAME}
 
 cd ${PKG_NAME}
 
@@ -39,7 +41,7 @@ GAP="/home/gap/inst/${GAPDIRNAME}/bin/gap.sh -l $PWD/gaproot; --quitonbreak -q"
 # Run package test
 $GAP <<GAPInput
 Read("/home/gap/travis/ci.g");
-if TestOnePackage(LowercaseString("$PKG_NAME")) <> true then
+if TestOnePackage(LowercaseString(GetNameFromPackageInfo("PackageInfo.g"))) <> true then
     FORCE_QUIT_GAP(1);
 fi;
 QUIT_GAP(0);
